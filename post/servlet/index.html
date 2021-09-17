@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html><head prefix=”og: http://ogp.me/ns#”>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法" />
+<meta property="og:description" content="ある日、Eclipceを使ってサーブレット＆JSPで簡単なアプリを作りました。せっかくだから公開したいと思い、herokuでデプロイすることにしましたが、ここがどうやら鬼門のようで、ググって出てくる他の初心者のみなさんと同様に、とんでもなくハマりました(約30時間)。">
+<meta property="og:image" content="https://amybunny.work/img/JavaMaven/jsp.png" />
+<meta property="og:url" content="https://amybunny.work/post/servlet/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ねむみの極み" />
+
+  <meta name="twitter:title" content="JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法" />
+  <meta name="twitter:description" content="ある日、Eclipceを使ってサーブレット＆JSPで簡単なアプリを作りました。せっかくだから公開したいと思い、herokuでデプロイすることにしましたが、ここがどうやら鬼門のようで、ググって出てくる他の初心者のみなさんと同様に、とんでもなくハマりました(約30時間)。">
+  <meta name="twitter:image" content="https://amybunny.work/img/JavaMaven/jsp.png" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="https://amybunny.work/css/destyle.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/style.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/index.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/sidebarprof.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/sidebarlist.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/single.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/404.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link href="https://amybunny.work/favicon.ico" rel='icon' type='image/x-icon'/>
+  
+  <title>JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法 | ねむみの極み</title>
+  
+  <meta name="google-site-verification" content="XQSgkkC-zFn5t3goFMQ170K7rC8V0_WB8gJ_rNJyWXk" />
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1YGFJSJ22"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K1YGFJSJ22');
+  </script>
+</head><body>
+    <div class="wrapper"><header class="bar">
+  <h1 class="mPlus1p siteTitle">
+    <a href="/">ねむみの極み</a>
+  </h1>
+</header><div class="mainContainer">
+        <div class="main">
+<!-- _default/single.html start -->
+<div class="singleContainer">
+  <h2 class="mPlus1p titles">JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法</h2>
+
+  <div class="entryInfoArea">
+    
+    
+    <div class="Date">
+      <p class="mPlus1p singleDate"><i class="fas fa-pen"></i> 2021-04-23</p>
+      
+    </div>
+    <a class="singleCategories" href="/categories/java">
+      Java
+    </a>
+  </div>
+
+  <img class="thumbnail" src="/img/JavaMaven/jsp.png" alt="">
+
+  <div class="singleContent"><h1 id="はじめに">はじめに</h1>
+<p>ある日、Eclipceを使ってサーブレット＆JSPで簡単なアプリを作りました。
+せっかくだから公開したいと思い、herokuでデプロイすることにしましたが、ここがどうやら鬼門のようで、ググって出てくる他の初心者のみなさんと同様に、とんでもなくハマりました(約30時間)。<br>
+<br>
+「絶対にデプロイできる方法(¥5,000)」みたいなnoteもあってなんかムカついたので、絶対自力で成功してやる！！！そしてやり方を無料で公開してやる！と決意し、無事成功したので、ここに書き残します。私の屍を超えてください。</p>
+<h2 id="当時の筆者の状況">当時の筆者の状況</h2>
+<p>・Java歴2ヶ月<br>
+・ターミナル操作は多少できる<br>
+・GitHubはブラウザからのアップロードならできる（ターミナルからのコマンド操作はできない）</p>
+<h2 id="心構え">心構え</h2>
+<p>Javaで作ったアプリをherokuにデプロイする際は、<strong>Maven</strong>を導入し、正しく設定する必要があります。<br>
+<br>
+Mavenはビルド自動化ツールといって、必要なプラグインやゴールを<strong>pom.xml</strong>というファイルに書いておけば、コンパイルやテストの実行、JARファイルの作成など面倒なことを一気にやってくれるものです。<br>
+<br>
+このMavenが1番のつまづきポイントだったので、初心者の方はここを乗り越えるのをがんばってください。</p>
+<h2 id="この記事で説明しないこと">この記事で説明しないこと</h2>
+<p>・GitHubの使い方<br>
+・herokuアカウントの作り方<br>
+・ターミナルの使い方<br>
+<br>
+※herokuへのデプロイ方法はいくつかありますが、この記事ではGitHub連携を使用します。</p>
+<h1 id="目次">目次</h1>
+<p>1.Mavenをインストール<br>
+2.環境変数の設定<br>
+3.Eclipseの設定<br>
+4.Mavenプロジェクトへの変換<br>
+5.herokuでの作業<br>
+<br>
+早速始めましょう！</p>
+<h1 id="1mavenをインストール">1.Mavenをインストール</h1>
+<p>まずはMavenをインストールします。やり方は、<br>
+・<strong>brewインストール</strong><br>
+・<strong>公式サイトからダウンロード</strong><br>
+の２種類あります。お好きな方を選んでください。</p>
+<h2 id="brewインストール">brewインストール</h2>
+<p>（Homebrewがインストールされている必要があります。）<br>
+ターミナルで以下のコマンドを実行します。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> $ brew install maven
+</code></pre></div><br>
+<h2 id="公式サイトからダウンロード">公式サイトからダウンロード</h2>
+<p><a href="https://maven.apache.org/download.cgi">こちらのサイト</a>からダウンロードします。「Binary zip archive」を選びます。<br>
+<figure><img src="/img/JavaMaven/download.png"/>
+</figure>
+<br>
+ファイルを解凍したら、windowsであればC:/、macであれば/usr/local/など好きな場所に移動します。</p>
+<h1 id="2環境変数の設定">2.環境変数の設定</h1>
+<p>Mavenのバージョンはご自身がダウンロードしたものに合わせてください。  <br></p>
+<h2 id="windows10の場合">Windows10の場合</h2>
+<p>1.スタートボタン ＞ Windowsシステムツール ＞ コントロールパネル ＞ システムとセキュリティ ＞ システム ＞ システムの詳細設定 ＞ 詳細設定 ＞ 環境変数 を順にクリック<br>
+<br>
+2.「システム環境変数(S)」の「Path」を選択し、「新規(W)」ボタンをクリック<br>
+<br>
+3.「C:\apache-maven-3.8.1\bin」を追加する<br>
+<br></p>
+<h2 id="macの場合">macの場合</h2>
+<p>ログインシェルがbashなら</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.bash_profile
+</code></pre></div><p>zshなら</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.zprofile
+</code></pre></div><p>で設定ファイルを開き、</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> export PATH=/usr/local/apache-maven-3.8.1/bin:$PATH 
+</code></pre></div><p>を追加します。<br>
+<br>
+ログインシェルがわからない場合は、</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> echo $SHELL
+</code></pre></div><p>で調べられます。<br>
+<br>
+brewインストールした場合はファイルの配置場所が/Libralyなどになっているかと思うので、/usr/local/の部分を/Libraly/に変えてください。<br>
+<br>
+追加できたら、以下のコマンドで設定を反映させます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> source ~/.bash_profile
+ または
+ source ~/.zprofile
+</code></pre></div><br>
+<h2 id="正常にインストールできたか確認">正常にインストールできたか確認</h2>
+<p>コマンドプロンプトやターミナルで、以下のコマンドを入力します。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> mvn --version
+</code></pre></div><p><br><code>Apache Maven 3.8.1</code>などのように、バージョンが表示されればインストール完了です。</p>
+<h1 id="3eclipseの設定">3.Eclipseの設定</h1>
+<p>Mavenがインストールできたら、EclipseでMavenが使えるように設定をする必要があります。</p>
+<h2 id="mavenプラグインのインストール">Mavenプラグインのインストール</h2>
+<p>Eclipse2019-9以降を使っている場合、プラグインは最初から入っているのでインストール不要です。<br>
+<br>
+それ以前の場合は、ヘルプ ＞ 「Eclipseマーケットプレース」をクリック ＞ 「m2e」で検索 ＞ 「Eclipse用 Maven 統合(Luna and newer)1.5」をインストールします。
+<figure><img src="/img/JavaMaven/marketplace.png"/>
+</figure>
+
+インストールできたら、Eclipseを再起動します。<br>
+<br></p>
+<h2 id="mavenプラグインの設定">Mavenプラグインの設定</h2>
+<p>次に、Mavenプラグインの設定をします。<br>
+設定 ＞ Maven ＞ ユーザー設定を開き、ユーザー設定の所に以下のパスを入力します。<br>
+<code>/usr/local/maven/conf/settings.xml</code>
+<figure><img src="/img/JavaMaven/mavensetting.png"/>
+</figure>
+
+※ここも、Mavenの配置場所に応じてパスを変えてください。私は/Library/にしています。</p>
+<h1 id="4mavenプロジェクトへの変換">4.Mavenプロジェクトへの変換</h1>
+<p>Mavenプラグインの設定ができたら、動的webプロジェクトとして作ったアプリを<strong>Mavenプロジェクト</strong>に変換する必要があります。やることは以下7つです。
+<br><br>
+1.新規Mavenプロジェクト作成<br>
+2.フォルダ作成・設定変更<br>
+3.ファイルのコピー<br>
+4.pom.xmlの記述<br>
+5.Procfileの作成<br>
+6.ビルド<br>
+7.GitHubへのアップロード<br>
+<br>
+順番に見ていきましょう。<br>
+<br></p>
+<h2 id="4-1新規mavenプロジェクト作成">4-1.新規Mavenプロジェクト作成</h2>
+<p>ファイル ＞ 新規作成 ＞ Mavenプロジェクト ＞ 次へをクリック
+<figure><img src="/img/JavaMaven/newmaven.png"/>
+</figure>
+<br>
+<br>
+<br>
+アーキタイプは「maven-archetype-webapp」を選択
+<figure><img src="/img/JavaMaven/archetype.png"/>
+</figure>
+<br>
+<br>
+<br>
+グループidとアーティファクトidを決めて、「完了」をクリック
+<figure><img src="/img/JavaMaven/parameter.png"/>
+</figure>
+<br>
+<br></p>
+<h2 id="4-2フォルダ作成設定変更">4-2.フォルダ作成・設定変更</h2>
+<p>次に、フォルダ作成・各種設定変更をします。<br>
+<br>
+srcフォルダの中に、以下のような階層で新しいフォルダを作ります。<br>
+mainフォルダだけは自動で作成されているので、その中にjavaフォルダを作り、test/javaフォルダは新しく作ってください。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> src
+ ├─main─java
+ ├─test─java
+</code></pre></div><br>
+<br>
+作成したプロジェクト名を右クリック ＞ プロパティ ＞ Javaのビルド・パス ＞ JREシステムライブラリーを選択し、右側の「編集」をクリック
+<figure><img src="/img/JavaMaven/property.png"/>
+</figure>
+  
+<br>
+<br>
+実行環境をJava8に変更し、完了をクリック  
+<figure><img src="/img/JavaMaven/8.png"/>
+</figure>
+  
+<br>
+<br>
+先ほどのプロパティ画面右側の「ライブラリーの追加」をクリック  
+サーバー・ランタイムを選択し、次へをクリック
+<figure><img src="/img/JavaMaven/server.png"/>
+</figure>
+  
+<br>
+<br>
+Tomcat8を選択(Tomcat9でも可)、完了をクリック
+<figure><img src="/img/JavaMaven/server-choice.png"/>
+</figure>
+ 
+<br> 
+<h2 id="4-3ファイルのコピー">4-3.ファイルのコピー</h2>
+<p>元の動的webプロジェクトから、新しいMavenプロジェクトにファイルをコピーします。<br>
+<br>
+Javaリソース/src以下のパッケージやファイルを、Javaリソース/src/main/java以下にコピー<br>
+<figure><img src="/img/JavaMaven/package2.png"/>
+</figure>
+<br>
+WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコピー<br>
+<figure><img src="/img/JavaMaven/webinf2.png"/>
+</figure>
+<br>
+<br></p>
+<h2 id="4-4pomxmlの記述">4-4.pom.xmlの記述</h2>
+<p>次に、Mavenの設定ファイルであるpom.xmlに記述を追加していきます。<br>
+<br>
+&lt;dependencies&gt;に以下を追加
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+	<span style="color:#f92672">&lt;groupId&gt;</span>javax.servlet<span style="color:#f92672">&lt;/groupId&gt;</span>
+	<span style="color:#f92672">&lt;artifactId&gt;</span>javax.servlet-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
+	<span style="color:#f92672">&lt;version&gt;</span>3.1.0<span style="color:#f92672">&lt;/version&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span></code></pre></td></tr></table>
+</div>
+</div></p>
+<p><br>&lt;plugins&gt;に以下を追加<br>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+	<span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+	<span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+	<span style="color:#f92672">&lt;executions&gt;</span>
+		<span style="color:#f92672">&lt;execution&gt;</span>
+			<span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
+			<span style="color:#f92672">&lt;goals&gt;&lt;goal&gt;</span>copy<span style="color:#f92672">&lt;/goal&gt;&lt;/goals&gt;</span>
+			<span style="color:#f92672">&lt;configuration&gt;</span>
+				<span style="color:#f92672">&lt;artifactItems&gt;</span>
+					<span style="color:#f92672">&lt;artifactItem&gt;</span>
+						<span style="color:#f92672">&lt;groupId&gt;</span>com.heroku<span style="color:#f92672">&lt;/groupId&gt;</span>
+						<span style="color:#f92672">&lt;artifactId&gt;</span>webapp-runner<span style="color:#f92672">&lt;/artifactId&gt;</span>
+						<span style="color:#f92672">&lt;version&gt;</span>9.0.41.0<span style="color:#f92672">&lt;/version&gt;</span>
+						<span style="color:#f92672">&lt;destFileName&gt;</span>webapp-runner.jar<span style="color:#f92672">&lt;/destFileName&gt;</span>
+					<span style="color:#f92672">&lt;/artifactItem&gt;</span>
+				<span style="color:#f92672">&lt;/artifactItems&gt;</span>
+			<span style="color:#f92672">&lt;/configuration&gt;</span>
+		<span style="color:#f92672">&lt;/execution&gt;</span>
+	<span style="color:#f92672">&lt;/executions&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span></code></pre></td></tr></table>
+</div>
+</div><br>
+<br>
+※もし&lt;plugins&gt;の親要素に&lt;pluginManagement&gt;タグがあったら削除してください。これがあるとherokuがwebapp-runner.jarを認識できないようで、謎のエラーに悩まされました。<br>
+<br>
+<br></p>
+<h2 id="4-5procfileの作成">4-5.Procfileの作成</h2>
+<p>プロジェクトのルートディレクトリにProcfileという名前のファイルを作成し、以下の1行を記述する。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
+</code></pre></div><br>
+<p>※必ず<strong>ルートディレクトリ</strong>に配置するのと、ファイル名の頭文字は<strong>大文字</strong>にしてください。そうしないと、herokuに認識されずエラーになります。</p>
+<br>
+<br>
+<h2 id="4-6ビルド">4-6.ビルド</h2>
+<p>pom.xmlを右クリック ＞ 実行 ＞ Mavenビルドを選択し、ゴールを「clean install」にし、「テストのスキップ」にチェックを入れ、ビルドを実行<br>
+<figure><img src="/img/JavaMaven/build.png"/>
+</figure>
+</p>
+<p>BUILD SUCCESSが表示されればOKです。
+<figure><img src="/img/JavaMaven/buildsuccess.png"/>
+</figure>
+<br></p>
+<h2 id="4-7githubへのアップロード">4-7.GitHubへのアップロード</h2>
+<p>ビルドが終わったら、できたソースコードをGitHubにアップロードしておいてください。</p>
+<h1 id="5herokuでの作業">5.herokuでの作業</h1>
+<p>Mavenビルドができたら、今度はheroku側での作業に移ります。herokuアカウントはあらかじめ作成しておいてください。やることは以下4つです。
+<br><br>
+1.アプリの作成<br>
+2.ビルドパックの設定<br>
+3.GitHub連携<br>
+4.デプロイ<br>
+<br></p>
+<h2 id="5-1アプリの作成">5-1.アプリの作成</h2>
+<p>Personalページ右上の「New」 ＞ 「Create new app」を選択<br>
+<figure><img src="/img/JavaMaven/create-new-app.png"/>
+</figure>
+<br>
+<br>
+アプリ名を決めて、「Create app」をクリック<br>
+(great-appは使えないと言われたのでthe-great-appにしました。)<br>
+<figure><img src="/img/JavaMaven/app-name.png"/>
+</figure>
+</p>
+<h2 id="5-2ビルドパックの設定">5-2.ビルドパックの設定</h2>
+<p>アプリページのメニューから「Settings」を選択<br>
+<figure><img src="/img/JavaMaven/settings.png"/>
+</figure>
+<br>
+<br>
+「Add buildpack」をクリック<br>
+<figure><img src="/img/JavaMaven/add-buildpack.png"/>
+</figure>
+<br>
+<br>
+javaを選択し、「Save changes」をクリック<br>
+<figure><img src="/img/JavaMaven/buildpack.png"/>
+</figure>
+<br>
+<br></p>
+<h2 id="5-3githubと連携する">5-3.GitHubと連携する</h2>
+<p>アプリページのメニューから「Deploy」を選択し、「GitHub」ボタンをクリック<br>
+<figure><img src="/img/JavaMaven/deploy.png"/>
+</figure>
+<br>
+<br>
+作ったアプリが保存されているリポジトリ名を入力し、「Search」ボタンをクリック<br>
+<figure><img src="/img/JavaMaven/github.png"/>
+</figure>
+<br>
+<br>
+該当のリポジトリ名が表示されるので、「Connect」をクリック
+<figure><img src="/img/JavaMaven/search-github.png"/>
+</figure>
+<br>
+<br>
+無事連携されると、GitHubボタンに「Connected」と表示されます。<br>
+<figure><img src="/img/JavaMaven/connected.png"/>
+</figure>
+</p>
+<h2 id="5-4デプロイする">5-4.デプロイする</h2>
+<p>GitHub連携すると、Deployページの一番下に「Deploy Branch」というボタンが表示されるので、それをクリック<br>
+<figure><img src="/img/JavaMaven/deploy-branch.png"/>
+</figure>
+<br>
+<br>
+無事デプロイできたら、以下のように「Your app was successfully deployed.」と表示され、「View」ボタンをクリックすると、アプリが見られます。<br>
+<figure><img src="/img/JavaMaven/success.png"/>
+</figure>
+<br>
+<br>
+※herokuにデプロイすると、アプリのURLが変わってしまうことに注意してください。例えば、ローカルでリダイレクトURLを「/great-app/index.jsp」にしていた場合、herokuでは「/index.jsp」にしないと正常に動きません。<br>
+<br>
+これは、ローカルだと「localhost:8080」を起点としていたのに対し、herokuでは「great-app」が起点となるからだと思います。これも結構ハマったポイントでした。</p>
+<h1 id="おわりに">おわりに</h1>
+<p>こうしてできたのが<a href="https://mugenlikes.herokuapp.com/">無限いいね</a>です。長い戦いでした。<br>
+<br>
+<br>
+<br></p>
+</div>
+
+  <div class="shareBtnArea">
+    <p class="mPlus1p share">シェアする</p>
+    <a class="rectangleBorder twitterBtn" href="//twitter.com/share?url=https%3a%2f%2famybunny.work%2fpost%2fservlet%2f&amp;text=JSP%26%e3%82%b5%e3%83%bc%e3%83%96%e3%83%ac%e3%83%83%e3%83%88%e3%81%a7%e4%bd%9c%e3%81%a3%e3%81%9f%e3%82%a2%e3%83%97%e3%83%aa%e3%82%92heroku%e3%81%ab%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95" target="_blank" title="Share on Twitter"><i class="rectangleBorder fab fa-twitter"></i></a>
+  </div>
+
+  <div class="pagination singlePagination">
+    
+    <a class="rectangleBorder prev singlePrev" href="https://amybunny.work/post/portfolio/">前へ</a>
+    
+    
+    
+    <a class="rectangleBorder next singleNext" href="https://amybunny.work/post/ajax/">次へ</a>
+    
+  </div>
+
+  <div class="mPlus1p breadCrumb">
+    <a href ="/"><i class="fas fa-home"></i> ホーム</a> >
+    <a href="/categories/java"><i class="fas fa-folder"></i> Java</a>
+  </div>
+</div>
+  
+<!-- _default/single.html end -->
+</div>
+        <div class="sidebar"><div class=" profContainer">
+  <p class="mPlus1p profTitle">プロフィール</p>
+  <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
+  <p class="mPlus1p profAuthor">あみぃ</p>  
+  <p class="profText">プログラミングを勉強中の29歳です。学習中に得た知見をブログにまとめています。</p> 
+  <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
+    <i class="fab fa-twitter"></i>
+  </a>
+  <p class="follow">↑follow me！</p>
+</div>
+
+<ul>
+  <li class="mPlus1p sidebarTitle">最近の投稿</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/history/">プログラミングなどの学習歴</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/vision/">あなたは何がしたいの？</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/reason/">教師を辞めた理由</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/skill/">現在のスキルレベルを言語化してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/crypto/">公開鍵暗号方式を図解してみた</a>
+      </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E8%87%AA%E5%88%86%E8%AA%9E%E3%82%8A">
+          自分語り(3)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E5%AE%9F%E7%B8%BE%E3%81%AA%E3%81%A9">
+          実績など(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/java">
+          java(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/javascript">
+          javascript(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E3%81%9D%E3%81%AE%E4%BB%96">
+          その他(1)
+        </a>
+      </li>
+    
+</ul></div>
+      </div><footer class="bar footer">
+  <p class="mPlus1p footerText">
+    ©️2021 ねむみの極み
+  </p>
+</footer></div>
+  </body>
+</html>

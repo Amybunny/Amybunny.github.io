@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html><head prefix=”og: http://ogp.me/ns#”>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="公開鍵暗号方式を図解してみた" />
+<meta property="og:description" content="情報処理試験で問われる暗号方式を図解しました。">
+<meta property="og:image" content="https://amybunny.work/img/crypto/crypto-thumbnail.png" />
+<meta property="og:url" content="https://amybunny.work/post/crypto/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ねむみの極み" />
+
+  <meta name="twitter:title" content="公開鍵暗号方式を図解してみた" />
+  <meta name="twitter:description" content="情報処理試験で問われる暗号方式を図解しました。">
+  <meta name="twitter:image" content="https://amybunny.work/img/crypto/crypto-thumbnail.png" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="https://amybunny.work/css/destyle.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/style.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/index.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/sidebarprof.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/sidebarlist.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/single.css" />
+<link rel="stylesheet" href="https://amybunny.work/css/404.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link href="https://amybunny.work/favicon.ico" rel='icon' type='image/x-icon'/>
+  
+  <title>公開鍵暗号方式を図解してみた | ねむみの極み</title>
+  
+  <meta name="google-site-verification" content="XQSgkkC-zFn5t3goFMQ170K7rC8V0_WB8gJ_rNJyWXk" />
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1YGFJSJ22"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K1YGFJSJ22');
+  </script>
+</head><body>
+    <div class="wrapper"><header class="bar">
+  <h1 class="mPlus1p siteTitle">
+    <a href="/">ねむみの極み</a>
+  </h1>
+</header><div class="mainContainer">
+        <div class="main">
+<!-- _default/single.html start -->
+<div class="singleContainer">
+  <h2 class="mPlus1p titles">公開鍵暗号方式を図解してみた</h2>
+
+  <div class="entryInfoArea">
+    
+    
+    <div class="Date">
+      <p class="mPlus1p singleDate"><i class="fas fa-pen"></i> 2021-05-17</p>
+      
+    </div>
+    <a class="singleCategories" href="/categories/%E3%81%9D%E3%81%AE%E4%BB%96">
+      その他
+    </a>
+  </div>
+
+  <img class="thumbnail" src="/img/crypto/crypto-thumbnail.png" alt="">
+
+  <div class="singleContent"><br>
+<br>
+今回は、情報処理試験で必ず問われる公開鍵暗号方式とその仕組みを使った認証技術について、図解したものを紹介します。  
+<br>
+<br>
+※この記事は、私が試験に向けて勉強する中で、複雑で覚えにくいなぁと思っていたものを分かりやすくまとめてみたものです。Twitterで公開したら、有識者の方からいくつかご指摘もいただきました。それらを反映させてから載せていますが、それでも「試験対策としてはOKだが、実務では違う」との声もいただいています。その点をふまえて読んでいただけたらと思います。
+<h2 id="基本の公開鍵暗号方式">基本の公開鍵暗号方式</h2>
+<p><figure><img src="/img/crypto/crypto.png"/>
+</figure>
+
+共通鍵暗号方式が「一つの鍵」を利用したものであるのに対し、公開鍵暗号方式では対になる<strong>公開鍵</strong>と<strong>秘密鍵</strong>を使用します。<br>
+<br>
+受信者は、名前の通り自分の秘密鍵は秘密にしておき、公開鍵を公開します。送信者は、公開されている鍵を利用して送信内容を暗号化します。<br>
+<br>
+暗号化された内容を復号できる鍵は受信者しか持っていないので、内容を誰にも見られずに通信することが可能になります。<br>
+<br></p>
+<h2 id="公開鍵暗号方式を使った認証">公開鍵暗号方式を使った認証</h2>
+<p><figure><img src="/img/crypto/auth.png"/>
+</figure>
+
+上記の公開鍵暗号方式を応用すれば、「このメッセージを送ってきたのは本当にAさんである」ことを確かめられるようになります。<br>
+<br>
+Aさんは、自分の秘密鍵で送信内容を暗号化します。<br>
+それを復号できるのはAさんの公開鍵だけなので、Aさんの公開鍵で復号できた=送信者は確かにAさんだ、となります。<br>
+<br></p>
+<h2 id="送信内容の改ざんを検知できるメッセージダイジェスト">送信内容の改ざんを検知できるメッセージダイジェスト</h2>
+<p><figure><img src="/img/crypto/digest.png"/>
+</figure>
+
+認証方法を応用すれば、送られてきたメッセージが改ざんされていないかどうかも確かめられます。<br>
+Aさんは本文だけでなく、<strong>ハッシュ関数</strong>を使って本文から作成した<strong>メッセージダイジェスト</strong>も合わせて暗号化して送信します。<br>
+<br>
+ハッシュ関数とは、簡単に言うと文字列をあるルールに従って別の文字列に変換する仕組みです。<br>
+例えば「文字をあいうえお順で一つ後ろにずらす」というルールだと、「おはよう」は「かひわえ」になるといった具合です。<br>
+もちろんこんな簡単なルールだとセキュリティも何もないので、実際はもっと複雑です。<br>
+<br>
+本文とメッセージダイジェストを受け取った受信者は、Aさんの公開鍵で本文とメッセージダイジェストを復号します。<br>
+さらに、Aさんが使ったのと同じハッシュ関数を使って、本文からメッセージダイジェストを作ります。<br>
+復号したメッセージダイジェストと、新たに作ったメッセージダイジェストが一致すれば、本文は改ざんされていないということが分かります。<br>
+<br></p>
+<h2 id="公開鍵の正当性を証明する仕組み">公開鍵の正当性を証明する仕組み</h2>
+<p><figure><img src="/img/crypto/certificate.png"/>
+</figure>
+
+公開鍵の仕組みを使えば、送信者が本当にAさんであることや、送信内容が改ざんされていないことが確かめられました。<br>
+<br>
+しかし、出回っている「Aさんの公開鍵」が、悪い人が作った偽物だったらどうしましょう。<br>
+本当はAさんの鍵じゃないのに、「これはAさんの鍵です」といって出回っていたら。元も子もないですね。<br>
+<br></p>
+<p>そのために、「これは本当にAさんの鍵ですよ」というのを証明してくれる<strong>認証局</strong>という機関があります。<br>
+<br>
+公開鍵を公開したい人は、認証局に免許証などの本人確認書類を添えて申請すると、認証局が証明書を発行してくれるという仕組みです。<br>
+<br>
+出回っている鍵が本当にAさんのものか気になった人は、認証局に証明書が失効していないかどうかを問い合わせます。問い合わせの結果、証明書が有効であれば本当にAさんのものだと証明されたことになります。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>最後までお読みいただきありがとうございました。この記事が、試験勉強に少しでもお役に立てたら幸いです。</p>
+</div>
+
+  <div class="shareBtnArea">
+    <p class="mPlus1p share">シェアする</p>
+    <a class="rectangleBorder twitterBtn" href="//twitter.com/share?url=https%3a%2f%2famybunny.work%2fpost%2fcrypto%2f&amp;text=%e5%85%ac%e9%96%8b%e9%8d%b5%e6%9a%97%e5%8f%b7%e6%96%b9%e5%bc%8f%e3%82%92%e5%9b%b3%e8%a7%a3%e3%81%97%e3%81%a6%e3%81%bf%e3%81%9f" target="_blank" title="Share on Twitter"><i class="rectangleBorder fab fa-twitter"></i></a>
+  </div>
+
+  <div class="pagination singlePagination">
+    
+    <a class="rectangleBorder prev singlePrev" href="https://amybunny.work/post/ajax/">前へ</a>
+    
+    
+    
+    <a class="rectangleBorder next singleNext" href="https://amybunny.work/post/skill/">次へ</a>
+    
+  </div>
+
+  <div class="mPlus1p breadCrumb">
+    <a href ="/"><i class="fas fa-home"></i> ホーム</a> >
+    <a href="/categories/%E3%81%9D%E3%81%AE%E4%BB%96"><i class="fas fa-folder"></i> その他</a>
+  </div>
+</div>
+  
+<!-- _default/single.html end -->
+</div>
+        <div class="sidebar"><div class=" profContainer">
+  <p class="mPlus1p profTitle">プロフィール</p>
+  <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
+  <p class="mPlus1p profAuthor">あみぃ</p>  
+  <p class="profText">プログラミングを勉強中の29歳です。学習中に得た知見をブログにまとめています。</p> 
+  <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
+    <i class="fab fa-twitter"></i>
+  </a>
+  <p class="follow">↑follow me！</p>
+</div>
+
+<ul>
+  <li class="mPlus1p sidebarTitle">最近の投稿</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/history/">プログラミングなどの学習歴</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/vision/">あなたは何がしたいの？</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/reason/">教師を辞めた理由</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/skill/">現在のスキルレベルを言語化してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/crypto/">公開鍵暗号方式を図解してみた</a>
+      </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E8%87%AA%E5%88%86%E8%AA%9E%E3%82%8A">
+          自分語り(3)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E5%AE%9F%E7%B8%BE%E3%81%AA%E3%81%A9">
+          実績など(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/java">
+          java(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/javascript">
+          javascript(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E3%81%9D%E3%81%AE%E4%BB%96">
+          その他(1)
+        </a>
+      </li>
+    
+</ul></div>
+      </div><footer class="bar footer">
+  <p class="mPlus1p footerText">
+    ©️2021 ねむみの極み
+  </p>
+</footer></div>
+  </body>
+</html>
