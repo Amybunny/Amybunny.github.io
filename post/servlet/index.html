@@ -98,12 +98,11 @@ Mavenはビルド自動化ツールといって、必要なプラグインやゴ
 <h2 id="brewインストール">brewインストール</h2>
 <p>（Homebrewがインストールされている必要があります。）<br>
 ターミナルで以下のコマンドを実行します。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> $ brew install maven
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> $ brew install maven
 </code></pre></div><br>
 <h2 id="公式サイトからダウンロード">公式サイトからダウンロード</h2>
 <p><a href="https://maven.apache.org/download.cgi">こちらのサイト</a>からダウンロードします。「Binary zip archive」を選びます。<br>
-<figure>
-    <img src="/img/JavaMaven/download.png"/> 
+<figure><img src="/img/JavaMaven/download.png"/>
 </figure>
 <br>
 ファイルを解凍したら、windowsであればC:/、macであれば/usr/local/など好きな場所に移動します。</p>
@@ -118,27 +117,27 @@ Mavenはビルド自動化ツールといって、必要なプラグインやゴ
 <br></p>
 <h2 id="macの場合">macの場合</h2>
 <p>ログインシェルがbashなら</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.bash_profile
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.bash_profile
 </code></pre></div><p>zshなら</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.zprofile
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.zprofile
 </code></pre></div><p>で設定ファイルを開き、</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> export PATH=/usr/local/apache-maven-3.8.1/bin:$PATH 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> export PATH=/usr/local/apache-maven-3.8.1/bin:$PATH 
 </code></pre></div><p>を追加します。<br>
 <br>
 ログインシェルがわからない場合は、</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> echo $SHELL
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> echo $SHELL
 </code></pre></div><p>で調べられます。<br>
 <br>
 brewインストールした場合はファイルの配置場所が/Libralyなどになっているかと思うので、/usr/local/の部分を/Libraly/に変えてください。<br>
 <br>
 追加できたら、以下のコマンドで設定を反映させます。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> source ~/.bash_profile
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> source ~/.bash_profile
  または
  source ~/.zprofile
 </code></pre></div><br>
 <h2 id="正常にインストールできたか確認">正常にインストールできたか確認</h2>
 <p>コマンドプロンプトやターミナルで、以下のコマンドを入力します。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> mvn --version
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> mvn --version
 </code></pre></div><p><br><code>Apache Maven 3.8.1</code>などのように、バージョンが表示されればインストール完了です。</p>
 <h1 id="3eclipseの設定">3.Eclipseの設定</h1>
 <p>Mavenがインストールできたら、EclipseでMavenが使えるように設定をする必要があります。</p>
@@ -146,8 +145,7 @@ brewインストールした場合はファイルの配置場所が/Libralyな�
 <p>Eclipse2019-9以降を使っている場合、プラグインは最初から入っているのでインストール不要です。<br>
 <br>
 それ以前の場合は、ヘルプ ＞ 「Eclipseマーケットプレース」をクリック ＞ 「m2e」で検索 ＞ 「Eclipse用 Maven 統合(Luna and newer)1.5」をインストールします。
-<figure>
-    <img src="/img/JavaMaven/marketplace.png"/> 
+<figure><img src="/img/JavaMaven/marketplace.png"/>
 </figure>
 
 インストールできたら、Eclipseを再起動します。<br>
@@ -156,8 +154,7 @@ brewインストールした場合はファイルの配置場所が/Libralyな�
 <p>次に、Mavenプラグインの設定をします。<br>
 設定 ＞ Maven ＞ ユーザー設定を開き、ユーザー設定の所に以下のパスを入力します。<br>
 <code>/usr/local/maven/conf/settings.xml</code>
-<figure>
-    <img src="/img/JavaMaven/mavensetting.png"/> 
+<figure><img src="/img/JavaMaven/mavensetting.png"/>
 </figure>
 
 ※ここも、Mavenの配置場所に応じてパスを変えてください。私は/Library/にしています。</p>
@@ -176,22 +173,19 @@ brewインストールした場合はファイルの配置場所が/Libralyな�
 <br></p>
 <h2 id="4-1新規mavenプロジェクト作成">4-1.新規Mavenプロジェクト作成</h2>
 <p>ファイル ＞ 新規作成 ＞ Mavenプロジェクト ＞ 次へをクリック
-<figure>
-    <img src="/img/JavaMaven/newmaven.png"/> 
+<figure><img src="/img/JavaMaven/newmaven.png"/>
 </figure>
 <br>
 <br>
 <br>
 アーキタイプは「maven-archetype-webapp」を選択
-<figure>
-    <img src="/img/JavaMaven/archetype.png"/> 
+<figure><img src="/img/JavaMaven/archetype.png"/>
 </figure>
 <br>
 <br>
 <br>
 グループidとアーティファクトidを決めて、「完了」をクリック
-<figure>
-    <img src="/img/JavaMaven/parameter.png"/> 
+<figure><img src="/img/JavaMaven/parameter.png"/>
 </figure>
 <br>
 <br></p>
@@ -200,36 +194,32 @@ brewインストールした場合はファイルの配置場所が/Libralyな�
 <br>
 srcフォルダの中に、以下のような階層で新しいフォルダを作ります。<br>
 mainフォルダだけは自動で作成されているので、その中にjavaフォルダを作り、test/javaフォルダは新しく作ってください。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> src
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> src
  ├─main─java
  ├─test─java
 </code></pre></div><br>
 <br>
 作成したプロジェクト名を右クリック ＞ プロパティ ＞ Javaのビルド・パス ＞ JREシステムライブラリーを選択し、右側の「編集」をクリック
-<figure>
-    <img src="/img/JavaMaven/property.png"/> 
+<figure><img src="/img/JavaMaven/property.png"/>
 </figure>
   
 <br>
 <br>
 実行環境をJava8に変更し、完了をクリック  
-<figure>
-    <img src="/img/JavaMaven/8.png"/> 
+<figure><img src="/img/JavaMaven/8.png"/>
 </figure>
   
 <br>
 <br>
 先ほどのプロパティ画面右側の「ライブラリーの追加」をクリック  
 サーバー・ランタイムを選択し、次へをクリック
-<figure>
-    <img src="/img/JavaMaven/server.png"/> 
+<figure><img src="/img/JavaMaven/server.png"/>
 </figure>
   
 <br>
 <br>
 Tomcat8を選択(Tomcat9でも可)、完了をクリック
-<figure>
-    <img src="/img/JavaMaven/server-choice.png"/> 
+<figure><img src="/img/JavaMaven/server-choice.png"/>
 </figure>
  
 <br> 
@@ -237,13 +227,11 @@ Tomcat8を選択(Tomcat9でも可)、完了をクリック
 <p>元の動的webプロジェクトから、新しいMavenプロジェクトにファイルをコピーします。<br>
 <br>
 Javaリソース/src以下のパッケージやファイルを、Javaリソース/src/main/java以下にコピー<br>
-<figure>
-    <img src="/img/JavaMaven/package2.png"/> 
+<figure><img src="/img/JavaMaven/package2.png"/>
 </figure>
 <br>
 WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコピー<br>
-<figure>
-    <img src="/img/JavaMaven/webinf2.png"/> 
+<figure><img src="/img/JavaMaven/webinf2.png"/>
 </figure>
 <br>
 <br></p>
@@ -253,14 +241,14 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 &lt;dependencies&gt;に以下を追加
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
 	<span style="color:#f92672">&lt;groupId&gt;</span>javax.servlet<span style="color:#f92672">&lt;/groupId&gt;</span>
 	<span style="color:#f92672">&lt;artifactId&gt;</span>javax.servlet-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
 	<span style="color:#f92672">&lt;version&gt;</span>3.1.0<span style="color:#f92672">&lt;/version&gt;</span>
@@ -270,7 +258,7 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 <p><br>&lt;plugins&gt;に以下を追加<br>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -292,7 +280,7 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
 	<span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
 	<span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
 	<span style="color:#f92672">&lt;executions&gt;</span>
@@ -320,20 +308,18 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 <br></p>
 <h2 id="4-5procfileの作成">4-5.Procfileの作成</h2>
 <p>プロジェクトのルートディレクトリにProcfileという名前のファイルを作成し、以下の1行を記述する。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
 </code></pre></div><br>
 <p>※必ず<strong>ルートディレクトリ</strong>に配置するのと、ファイル名の頭文字は<strong>大文字</strong>にしてください。そうしないと、herokuに認識されずエラーになります。</p>
 <br>
 <br>
 <h2 id="4-6ビルド">4-6.ビルド</h2>
 <p>pom.xmlを右クリック ＞ 実行 ＞ Mavenビルドを選択し、ゴールを「clean install」にし、「テストのスキップ」にチェックを入れ、ビルドを実行<br>
-<figure>
-    <img src="/img/JavaMaven/build.png"/> 
+<figure><img src="/img/JavaMaven/build.png"/>
 </figure>
 </p>
 <p>BUILD SUCCESSが表示されればOKです。
-<figure>
-    <img src="/img/JavaMaven/buildsuccess.png"/> 
+<figure><img src="/img/JavaMaven/buildsuccess.png"/>
 </figure>
 <br></p>
 <h2 id="4-7githubへのアップロード">4-7.GitHubへのアップロード</h2>
@@ -348,70 +334,59 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 <br></p>
 <h2 id="5-1アプリの作成">5-1.アプリの作成</h2>
 <p>Personalページ右上の「New」 ＞ 「Create new app」を選択<br>
-<figure>
-    <img src="/img/JavaMaven/create-new-app.png"/> 
+<figure><img src="/img/JavaMaven/create-new-app.png"/>
 </figure>
 <br>
 <br>
 アプリ名を決めて、「Create app」をクリック<br>
 (great-appは使えないと言われたのでthe-great-appにしました。)<br>
-<figure>
-    <img src="/img/JavaMaven/app-name.png"/> 
+<figure><img src="/img/JavaMaven/app-name.png"/>
 </figure>
 </p>
 <h2 id="5-2ビルドパックの設定">5-2.ビルドパックの設定</h2>
 <p>アプリページのメニューから「Settings」を選択<br>
-<figure>
-    <img src="/img/JavaMaven/settings.png"/> 
+<figure><img src="/img/JavaMaven/settings.png"/>
 </figure>
 <br>
 <br>
 「Add buildpack」をクリック<br>
-<figure>
-    <img src="/img/JavaMaven/add-buildpack.png"/> 
+<figure><img src="/img/JavaMaven/add-buildpack.png"/>
 </figure>
 <br>
 <br>
 javaを選択し、「Save changes」をクリック<br>
-<figure>
-    <img src="/img/JavaMaven/buildpack.png"/> 
+<figure><img src="/img/JavaMaven/buildpack.png"/>
 </figure>
 <br>
 <br></p>
 <h2 id="5-3githubと連携する">5-3.GitHubと連携する</h2>
 <p>アプリページのメニューから「Deploy」を選択し、「GitHub」ボタンをクリック<br>
-<figure>
-    <img src="/img/JavaMaven/deploy.png"/> 
+<figure><img src="/img/JavaMaven/deploy.png"/>
 </figure>
 <br>
 <br>
 作ったアプリが保存されているリポジトリ名を入力し、「Search」ボタンをクリック<br>
-<figure>
-    <img src="/img/JavaMaven/github.png"/> 
+<figure><img src="/img/JavaMaven/github.png"/>
 </figure>
 <br>
 <br>
 該当のリポジトリ名が表示されるので、「Connect」をクリック
-<figure>
-    <img src="/img/JavaMaven/search-github.png"/> 
+<figure><img src="/img/JavaMaven/search-github.png"/>
 </figure>
 <br>
 <br>
 無事連携されると、GitHubボタンに「Connected」と表示されます。<br>
-<figure>
-    <img src="/img/JavaMaven/connected.png"/> 
+<figure><img src="/img/JavaMaven/connected.png"/>
 </figure>
 </p>
 <h2 id="5-4デプロイする">5-4.デプロイする</h2>
 <p>GitHub連携すると、Deployページの一番下に「Deploy Branch」というボタンが表示されるので、それをクリック<br>
-<figure>
-    <img src="/img/JavaMaven/deploy-branch.png"/> 
+<figure><img src="/img/JavaMaven/deploy-branch.png"/>
 </figure>
 <br>
 <br>
 無事デプロイできたら、以下のように「Your app was successfully deployed.」と表示され、「View」ボタンをクリックすると、アプリが見られます。<br>
-<figure>
-    <img src="/img/JavaMaven/success.png"/> 
+<figure><img src="/img/JavaMaven/success.png"/>
 </figure>
 <br>
 <br>
