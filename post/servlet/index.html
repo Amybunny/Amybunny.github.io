@@ -98,8 +98,8 @@ Mavenはビルド自動化ツールといって、必要なプラグインやゴ
 <h2 id="brewインストール">brewインストール</h2>
 <p>（Homebrewがインストールされている必要があります。）<br>
 ターミナルで以下のコマンドを実行します。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> $ brew install maven
-</code></pre></div><br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> $ brew install maven
+</span></span></code></pre></div><br>
 <h2 id="公式サイトからダウンロード">公式サイトからダウンロード</h2>
 <p><a href="https://maven.apache.org/download.cgi">こちらのサイト</a>からダウンロードします。「Binary zip archive」を選びます。<br>
 <figure><img src="/img/JavaMaven/download.png"/>
@@ -117,28 +117,28 @@ Mavenはビルド自動化ツールといって、必要なプラグインやゴ
 <br></p>
 <h2 id="macの場合">macの場合</h2>
 <p>ログインシェルがbashなら</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.bash_profile
-</code></pre></div><p>zshなら</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> open ~/.zprofile
-</code></pre></div><p>で設定ファイルを開き、</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> export PATH=/usr/local/apache-maven-3.8.1/bin:$PATH 
-</code></pre></div><p>を追加します。<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> open ~/.bash_profile
+</span></span></code></pre></div><p>zshなら</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> open ~/.zprofile
+</span></span></code></pre></div><p>で設定ファイルを開き、</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> export PATH=/usr/local/apache-maven-3.8.1/bin:$PATH 
+</span></span></code></pre></div><p>を追加します。<br>
 <br>
 ログインシェルがわからない場合は、</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> echo $SHELL
-</code></pre></div><p>で調べられます。<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> echo $SHELL
+</span></span></code></pre></div><p>で調べられます。<br>
 <br>
 brewインストールした場合はファイルの配置場所が/Libralyなどになっているかと思うので、/usr/local/の部分を/Libraly/に変えてください。<br>
 <br>
 追加できたら、以下のコマンドで設定を反映させます。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> source ~/.bash_profile
- または
- source ~/.zprofile
-</code></pre></div><br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> source ~/.bash_profile
+</span></span><span style="display:flex;"><span> または
+</span></span><span style="display:flex;"><span> source ~/.zprofile
+</span></span></code></pre></div><br>
 <h2 id="正常にインストールできたか確認">正常にインストールできたか確認</h2>
 <p>コマンドプロンプトやターミナルで、以下のコマンドを入力します。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> mvn --version
-</code></pre></div><p><br><code>Apache Maven 3.8.1</code>などのように、バージョンが表示されればインストール完了です。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> mvn --version
+</span></span></code></pre></div><p><br><code>Apache Maven 3.8.1</code>などのように、バージョンが表示されればインストール完了です。</p>
 <h1 id="3eclipseの設定">3.Eclipseの設定</h1>
 <p>Mavenがインストールできたら、EclipseでMavenが使えるように設定をする必要があります。</p>
 <h2 id="mavenプラグインのインストール">Mavenプラグインのインストール</h2>
@@ -194,10 +194,10 @@ brewインストールした場合はファイルの配置場所が/Libralyな�
 <br>
 srcフォルダの中に、以下のような階層で新しいフォルダを作ります。<br>
 mainフォルダだけは自動で作成されているので、その中にjavaフォルダを作り、test/javaフォルダは新しく作ってください。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> src
- ├─main─java
- ├─test─java
-</code></pre></div><br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> src
+</span></span><span style="display:flex;"><span> ├─main─java
+</span></span><span style="display:flex;"><span> ├─test─java
+</span></span></code></pre></div><br>
 <br>
 作成したプロジェクト名を右クリック ＞ プロパティ ＞ Javaのビルド・パス ＞ JREシステムライブラリーを選択し、右側の「編集」をクリック
 <figure><img src="/img/JavaMaven/property.png"/>
@@ -239,67 +239,67 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 <p>次に、Mavenの設定ファイルであるpom.xmlに記述を追加していきます。<br>
 <br>
 &lt;dependencies&gt;に以下を追加
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
-	<span style="color:#f92672">&lt;groupId&gt;</span>javax.servlet<span style="color:#f92672">&lt;/groupId&gt;</span>
-	<span style="color:#f92672">&lt;artifactId&gt;</span>javax.servlet-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
-	<span style="color:#f92672">&lt;version&gt;</span>3.1.0<span style="color:#f92672">&lt;/version&gt;</span>
-<span style="color:#f92672">&lt;/dependency&gt;</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;groupId&gt;</span>javax.servlet<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;artifactId&gt;</span>javax.servlet-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;version&gt;</span>3.1.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span></span></span></code></pre></td></tr></table>
 </div>
 </div></p>
 <p><br>&lt;plugins&gt;に以下を追加<br>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
-	<span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
-	<span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
-	<span style="color:#f92672">&lt;executions&gt;</span>
-		<span style="color:#f92672">&lt;execution&gt;</span>
-			<span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
-			<span style="color:#f92672">&lt;goals&gt;&lt;goal&gt;</span>copy<span style="color:#f92672">&lt;/goal&gt;&lt;/goals&gt;</span>
-			<span style="color:#f92672">&lt;configuration&gt;</span>
-				<span style="color:#f92672">&lt;artifactItems&gt;</span>
-					<span style="color:#f92672">&lt;artifactItem&gt;</span>
-						<span style="color:#f92672">&lt;groupId&gt;</span>com.heroku<span style="color:#f92672">&lt;/groupId&gt;</span>
-						<span style="color:#f92672">&lt;artifactId&gt;</span>webapp-runner<span style="color:#f92672">&lt;/artifactId&gt;</span>
-						<span style="color:#f92672">&lt;version&gt;</span>9.0.41.0<span style="color:#f92672">&lt;/version&gt;</span>
-						<span style="color:#f92672">&lt;destFileName&gt;</span>webapp-runner.jar<span style="color:#f92672">&lt;/destFileName&gt;</span>
-					<span style="color:#f92672">&lt;/artifactItem&gt;</span>
-				<span style="color:#f92672">&lt;/artifactItems&gt;</span>
-			<span style="color:#f92672">&lt;/configuration&gt;</span>
-		<span style="color:#f92672">&lt;/execution&gt;</span>
-	<span style="color:#f92672">&lt;/executions&gt;</span>
-<span style="color:#f92672">&lt;/plugin&gt;</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;executions&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;goals&gt;&lt;goal&gt;</span>copy<span style="color:#f92672">&lt;/goal&gt;&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#f92672">&lt;artifactItems&gt;</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#f92672">&lt;artifactItem&gt;</span>
+</span></span><span style="display:flex;"><span>						<span style="color:#f92672">&lt;groupId&gt;</span>com.heroku<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>						<span style="color:#f92672">&lt;artifactId&gt;</span>webapp-runner<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>						<span style="color:#f92672">&lt;version&gt;</span>9.0.41.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>						<span style="color:#f92672">&lt;destFileName&gt;</span>webapp-runner.jar<span style="color:#f92672">&lt;/destFileName&gt;</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#f92672">&lt;/artifactItem&gt;</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#f92672">&lt;/artifactItems&gt;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;/executions&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/plugin&gt;</span></span></span></code></pre></td></tr></table>
 </div>
 </div><br>
 <br>
@@ -308,8 +308,8 @@ WebContent/WEB-INF以下のファイルを、src/main/webapp/WEB-INF以下にコ
 <br></p>
 <h2 id="4-5procfileの作成">4-5.Procfileの作成</h2>
 <p>プロジェクトのルートディレクトリにProcfileという名前のファイルを作成し、以下の1行を記述する。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt"> web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
-</code></pre></div><br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
+</span></span></code></pre></div><br>
 <p>※必ず<strong>ルートディレクトリ</strong>に配置するのと、ファイル名の頭文字は<strong>大文字</strong>にしてください。そうしないと、herokuに認識されずエラーになります。</p>
 <br>
 <br>
@@ -427,7 +427,7 @@ javaを選択し、「Save changes」をクリック<br>
   <p class="mPlus1p profTitle">プロフィール</p>
   <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
   <p class="mPlus1p profAuthor">あみぃ</p>  
-  <p class="profText">プログラミングを勉強中の30歳です。学習中に得た知見をブログにまとめています。</p> 
+  <p class="profText">31歳インフラエンジニアです。学習中に得た知見をブログにまとめています。</p> 
   <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
     <i class="fab fa-twitter"></i>
   </a>
@@ -438,11 +438,7 @@ javaを選択し、「Save changes」をクリック<br>
   <li class="mPlus1p sidebarTitle">最近の投稿</li>
     
       <li class ="listTitle">
-        <a class="listTitleLink" href="/post/skill/">現在のスキルレベルを言語化してみた</a>
-      </li>
-    
-      <li class ="listTitle">
-        <a class="listTitleLink" href="/post/history/">プログラミングなどの学習歴</a>
+        <a class="listTitleLink" href="/post/lpic/">LPIC101あずき本の1章1節を解説してみた</a>
       </li>
     
       <li class ="listTitle">
@@ -457,13 +453,11 @@ javaを選択し、「Save changes」をクリック<br>
         <a class="listTitleLink" href="/post/servlet/">JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法</a>
       </li>
     
-  <li class="mPlus1p sidebarTitle">カテゴリ</li>
-    
       <li class ="listTitle">
-        <a class="listTitleLink" href="/categories/%E5%AE%9F%E7%B8%BE%E3%81%AA%E3%81%A9">
-          実績など(2)
-        </a>
+        <a class="listTitleLink" href="/post/portfolio/">ポートフォリオ</a>
       </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
     
       <li class ="listTitle">
         <a class="listTitleLink" href="/categories/java">
@@ -484,8 +478,14 @@ javaを選択し、「Save changes」をクリック<br>
       </li>
     
       <li class ="listTitle">
-        <a class="listTitleLink" href="/categories/%E8%87%AA%E5%88%86%E8%AA%9E%E3%82%8A">
-          自分語り(1)
+        <a class="listTitleLink" href="/categories/%E5%AE%9F%E7%B8%BE%E3%81%AA%E3%81%A9">
+          実績など(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">
+          技術解説(1)
         </a>
       </li>
     
