@@ -12,13 +12,13 @@
   <meta name="twitter:title" content="JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法" />
   <meta name="twitter:description" content="ある日、Eclipceを使ってサーブレット＆JSPで簡単なアプリを作りました。せっかくだから公開したいと思い、herokuでデプロイすることにしましたが、ここがどうやら鬼門のようで、ググって出てくる他の初心者のみなさんと同様に、とんでもなくハマりました(約30時間)。">
   <meta name="twitter:image" content="https://amybunny.work/img/JavaMaven/jsp.png" />
-  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="https://amybunny.work/css/destyle.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/style.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/index.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/sidebarprof.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/sidebarlist.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/single.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/404.css" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="/css/destyle.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<link rel="stylesheet" href="/css/sidebarprof.css" />
+<link rel="stylesheet" href="/css/sidebarlist.css" />
+<link rel="stylesheet" href="/css/single.css" />
+<link rel="stylesheet" href="/css/404.css" />
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -44,6 +44,9 @@
 </header><div class="mainContainer">
         <div class="main">
 <!-- _default/single.html start -->
+<style>
+
+</style>
 <div class="singleContainer">
   <h2 class="mPlus1p titles">JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法</h2>
 
@@ -60,6 +63,50 @@
   </div>
 
   <img class="thumbnail" src="/img/JavaMaven/jsp.png" alt="">
+  <aside class="xToc">
+    <div class="xToc_title">目次</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#当時の筆者の状況">当時の筆者の状況</a></li>
+    <li><a href="#心構え">心構え</a></li>
+    <li><a href="#この記事で説明しないこと">この記事で説明しないこと</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#brewインストール">brewインストール</a></li>
+    <li><a href="#公式サイトからダウンロード">公式サイトからダウンロード</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#windows10の場合">Windows10の場合</a></li>
+    <li><a href="#macの場合">macの場合</a></li>
+    <li><a href="#正常にインストールできたか確認">正常にインストールできたか確認</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#mavenプラグインのインストール">Mavenプラグインのインストール</a></li>
+    <li><a href="#mavenプラグインの設定">Mavenプラグインの設定</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#4-1新規mavenプロジェクト作成">4-1.新規Mavenプロジェクト作成</a></li>
+    <li><a href="#4-2フォルダ作成設定変更">4-2.フォルダ作成・設定変更</a></li>
+    <li><a href="#4-3ファイルのコピー">4-3.ファイルのコピー</a></li>
+    <li><a href="#4-4pomxmlの記述">4-4.pom.xmlの記述</a></li>
+    <li><a href="#4-5procfileの作成">4-5.Procfileの作成</a></li>
+    <li><a href="#4-6ビルド">4-6.ビルド</a></li>
+    <li><a href="#4-7githubへのアップロード">4-7.GitHubへのアップロード</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#5-1アプリの作成">5-1.アプリの作成</a></li>
+    <li><a href="#5-2ビルドパックの設定">5-2.ビルドパックの設定</a></li>
+    <li><a href="#5-3githubと連携する">5-3.GitHubと連携する</a></li>
+    <li><a href="#5-4デプロイする">5-4.デプロイする</a></li>
+  </ul>
+</nav>
+  </aside>
+ 
 
   <div class="singleContent"><h1 id="はじめに">はじめに</h1>
 <p>ある日、Eclipceを使ってサーブレット＆JSPで簡単なアプリを作りました。
@@ -492,7 +539,7 @@ javaを選択し、「Save changes」をクリック<br>
 </ul></div>
       </div><footer class="bar footer">
   <p class="mPlus1p footerText">
-    ©️2021 ねむみの極み
+    ©️2023 ねむみの極み
   </p>
 </footer></div>
   </body>

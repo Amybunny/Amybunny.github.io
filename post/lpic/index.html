@@ -12,13 +12,13 @@
   <meta name="twitter:title" content="LPIC101あずき本の1章1節を解説してみた" />
   <meta name="twitter:description" content="LPIC101のちょっととっつきにくい部分を解説しました。">
   <meta name="twitter:image" content="https://amybunny.work/img/azuki2.png" />
-  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="https://amybunny.work/css/destyle.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/style.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/index.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/sidebarprof.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/sidebarlist.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/single.css" />
-<link rel="stylesheet" href="https://amybunny.work/css/404.css" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="/css/destyle.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<link rel="stylesheet" href="/css/sidebarprof.css" />
+<link rel="stylesheet" href="/css/sidebarlist.css" />
+<link rel="stylesheet" href="/css/single.css" />
+<link rel="stylesheet" href="/css/404.css" />
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -44,6 +44,9 @@
 </header><div class="mainContainer">
         <div class="main">
 <!-- _default/single.html start -->
+<style>
+
+</style>
 <div class="singleContainer">
   <h2 class="mPlus1p titles">LPIC101あずき本の1章1節を解説してみた</h2>
 
@@ -60,6 +63,23 @@
   </div>
 
   <img class="thumbnail" src="/img/azuki2.png" alt="">
+  <aside class="xToc">
+    <div class="xToc_title">目次</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#想定読者">想定読者</a></li>
+    <li><a href="#なぜハードウェアから入るのか">なぜハードウェアから入るのか</a></li>
+    <li><a href="#procディレクトリ">/procディレクトリ</a></li>
+    <li><a href="#lsコマンド">ls○○○コマンド</a></li>
+    <li><a href="#biosuefi">BIOS/UEFI</a></li>
+    <li><a href="#デバイスファイルとdevディレクトリ">デバイスファイルと/devディレクトリ</a></li>
+    <li><a href="#デバイスファイルの作られ方">デバイスファイルの作られ方</a></li>
+    <li><a href="#デバイスドライバとカーネルモジュール">デバイスドライバとカーネルモジュール</a></li>
+    <li><a href="#usbのデバイスドライバ">USBのデバイスドライバ</a></li>
+  </ul>
+</nav>
+  </aside>
+ 
 
   <div class="singleContent"><br>
 <p>こんにちは。あみぃです。<br>
@@ -95,9 +115,9 @@ AWSなんて安くて分かりやすい本がたくさん出ているのに<del>
 <br>
 (ついでに言うと同じシリーズの白本も<del>クソ</del>分かりにくいですよね。<br>
 明らかに必要のない説明をダラッダラ続けているページがあって腹が立ちます。)</p>
-<h1 id="想定読者">想定読者</h1>
+<h2 id="想定読者">想定読者</h2>
 <p>『1週間でLPICの基礎が学べる本』程度の知識を持っている人</p>
-<h1 id="なぜハードウェアから入るのか">なぜハードウェアから入るのか</h1>
+<h2 id="なぜハードウェアから入るのか">なぜハードウェアから入るのか</h2>
 <p>では早速始めましょう。
 <br>
 <br>
@@ -126,7 +146,7 @@ LinuxはOSなのに、なぜハードウェアについて学ぶのでしょう�
 <br>
 <br></p>
 <p>そこで、Linuxがちゃんとハードウェアを認識しているかを確認できる<strong>ファイル</strong>や<strong>コマンド</strong>があります。</p>
-<h1 id="procディレクトリ">/procディレクトリ</h1>
+<h2 id="procディレクトリ">/procディレクトリ</h2>
 <p>まずは、「Linuxが認識しているハードウェア情報」を確認できるファイルについて。これは、<strong>/proc</strong>というディレクトリの中にあります。<br>
 /proc/cpuinfoであればCPU情報、/proc/meminfoであればメモリ情報、といった具合です。
 <br>
@@ -161,7 +181,7 @@ LinuxはOSなのに、なぜハードウェアについて学ぶのでしょう�
 <br>
 結構、知らない単語が多いと思います。<br>
 最後から2番目の「ロードされているカーネルモジュール」については後ほど解説しますが、それ以外で分からないものはググって調べてみてください。</p>
-<h1 id="lsコマンド">ls○○○コマンド</h1>
+<h2 id="lsコマンド">ls○○○コマンド</h2>
 <p>次に、「Linuxが認識しているハードウェア情報」を確認できるコマンドです。<br>
 <strong>lsホニャララ</strong>というコマンドがいくつか用意されています。
 <br>
@@ -173,7 +193,7 @@ LinuxはOSなのに、なぜハードウェアについて学ぶのでしょう�
 <br>
 <br>
 これらのコマンドについても、余裕があれば実行してみてください。</p>
-<h1 id="biosuefi">BIOS/UEFI</h1>
+<h2 id="biosuefi">BIOS/UEFI</h2>
 <p>とまぁここまでハードウェアの様子を調べるためのファイルやコマンドを見た訳ですが、実はOSが起動する前、コンピュータの電源を入れたら一番に起動する、ハードウェアを制御するためのプログラムがあります。
 <br>
 <br>
@@ -207,7 +227,7 @@ LinuxをあらかじめインターネットからダウンロードしてUSBメ
 <br>
 <br>
 さてこのBIOSですが、最近は<strong>UEFI</strong>(Unified Extensive Firmware Extensive)というものに置き換わっているみたいです。進化バージョンですね。しかしUEFIもひっくるめてBIOSと言ったりもするみたいです。</p>
-<h1 id="デバイスファイルとdevディレクトリ">デバイスファイルと/devディレクトリ</h1>
+<h2 id="デバイスファイルとdevディレクトリ">デバイスファイルと/devディレクトリ</h2>
 <p>話を少し戻します。
 <br>
 <br>
@@ -228,7 +248,7 @@ LinuxをあらかじめインターネットからダウンロードしてUSBメ
 <br>
 <br></p>
 <p>デバイスファイルはどこにあるかというと、<strong>/dev</strong>というディレクトリの中にあります。</p>
-<h1 id="デバイスファイルの作られ方">デバイスファイルの作られ方</h1>
+<h2 id="デバイスファイルの作られ方">デバイスファイルの作られ方</h2>
 <p>/devディレクトリの中のデバイスファイルは、<strong>udev</strong>という仕組みによって作られます。<br>
 ファイル作成係のudev君というのをイメージしてみると良いでしょう。
 <br>
@@ -254,7 +274,7 @@ D-Busはプロセス間通信機構とか出てきて何やら難しそうです
 <br>
 <br>
 ちなみに/etcディレクトリの中のホニャララ.dというのは設定関連でよく出てくるので、整理しながら覚えると良いです。業務でもよく使います。</p>
-<h1 id="デバイスドライバとカーネルモジュール">デバイスドライバとカーネルモジュール</h1>
+<h2 id="デバイスドライバとカーネルモジュール">デバイスドライバとカーネルモジュール</h2>
 <p>Linuxはファイルの読み書きを通してデバイス(ハードウェア)を操作することが分かりましたが、操作のためにはもう一つ必要なものがあります。それが、<strong>デバイスドライバ</strong>です。
 <br>
 <br>
@@ -276,7 +296,7 @@ D-Busはプロセス間通信機構とか出てきて何やら難しそうです
 <br></p>
 <p><strong>lsmod</strong>：ロードされているカーネルモジュールを確認するコマンド<br>
 <strong>modprobe</strong>：カーネルモジュールを手動でロードする時のコマンド</p>
-<h1 id="usbのデバイスドライバ">USBのデバイスドライバ</h1>
+<h2 id="usbのデバイスドライバ">USBのデバイスドライバ</h2>
 <p>最後は唐突感がありますが、USBについてです。<br>
 ここではLinuxというよりUSBの規格についての話がメインになります。
 <br>
@@ -403,7 +423,7 @@ D-Busはプロセス間通信機構とか出てきて何やら難しそうです
 </ul></div>
       </div><footer class="bar footer">
   <p class="mPlus1p footerText">
-    ©️2021 ねむみの極み
+    ©️2023 ねむみの極み
   </p>
 </footer></div>
   </body>
