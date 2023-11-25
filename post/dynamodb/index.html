@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html><head prefix=”og: http://ogp.me/ns#”>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="PartiQLを使用してDynamoDBのデータをCSVに出力する方法" />
+<meta property="og:description" content="DynamoDBのデータをCSVに落とす方法を解説します。">
+<meta property="og:image" content="https://amybunny.work/img/dynamo/partiql.png" />
+<meta property="og:url" content="https://amybunny.work/post/dynamodb/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ねむみの極み" />
+
+  <meta name="twitter:title" content="PartiQLを使用してDynamoDBのデータをCSVに出力する方法" />
+  <meta name="twitter:description" content="DynamoDBのデータをCSVに落とす方法を解説します。">
+  <meta name="twitter:image" content="https://amybunny.work/img/dynamo/partiql.png" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="/css/destyle.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<link rel="stylesheet" href="/css/sidebarprof.css" />
+<link rel="stylesheet" href="/css/sidebarlist.css" />
+<link rel="stylesheet" href="/css/single.css" />
+<link rel="stylesheet" href="/css/404.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link href="https://amybunny.work/favicon.ico" rel='icon' type='image/x-icon'/>
+  
+  <title>PartiQLを使用してDynamoDBのデータをCSVに出力する方法 | ねむみの極み</title>
+  
+  <meta name="google-site-verification" content="XQSgkkC-zFn5t3goFMQ170K7rC8V0_WB8gJ_rNJyWXk" />
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1YGFJSJ22"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K1YGFJSJ22');
+  </script>
+</head><body>
+    <div class="wrapper"><header class="bar">
+  <h1 class="mPlus1p siteTitle">
+    <a href="/">ねむみの極み</a>
+  </h1>
+</header><div class="mainContainer">
+        <div class="main">
+<!-- _default/single.html start -->
+<style>
+
+</style>
+<div class="singleContainer">
+  <h2 class="mPlus1p titles">PartiQLを使用してDynamoDBのデータをCSVに出力する方法</h2>
+
+  <div class="entryInfoArea">
+    
+    
+    <div class="Date">
+      <p class="mPlus1p singleDate"><i class="fas fa-pen"></i> 2023-11-23</p>
+      
+    </div>
+    <a class="singleCategories" href="/categories/aws">
+      aws
+    </a>
+  </div>
+
+  <img class="thumbnail" src="/img/dynamo/partiql.png" alt="">
+  <aside class="xToc">
+    <div class="xToc_title">目次</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#partiqlとは">PartiQLとは</a></li>
+        <li><a href="#方法">方法</a></li>
+        <li><a href="#sqlの書き方">SQLの書き方</a></li>
+        <li><a href="#注意点">注意点</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </aside>
+ 
+
+  <div class="singleContent"><p>こんにちは。<br>
+DynamoDBのデータをCSVに落とす必要があったのですが、<br>
+マネコンからだと300件ずつしか落とせず困っていました。<br>
+<br>
+ググっても痒い所に手が届かず試行錯誤しましたが、<br>
+PartiQLを使用すると簡単にできたので紹介します。
+<br></p>
+<h3 id="partiqlとは">PartiQLとは</h3>
+<p>PartiQLはDynamoDBに対してSQLが使える機能です。<br>
+あまり高度なことはできませんが、使い慣れたSQLでクエリできるので便利です。</p>
+<h3 id="方法">方法</h3>
+<p>以下のようなデータがあったとします。<br>
+<br>
+パーティションキー：prefecture<br>
+ソートキー：age
+<figure><img src="/img/dynamo/dynamo.png"/>
+</figure>
+
+<br>
+この中から、東京都の30歳以上の人を抽出してみます。<br>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> test <span style="color:#66d9ef">WHERE</span> prefecture <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;東京都&#39;</span> <span style="color:#66d9ef">and</span> age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">30</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+すると、以下のように結果が返ってきます。<br>
+右上の「結果をCSVにダウンロードする」ボタンを押すと、<br>
+結果が300件以上であっても、一括でDLすることができます。
+<figure><img src="/img/dynamo/outcome.png"/>
+</figure>
+
+<br>
+これを日付で絞り込みたければ、以下のように「begins_with」関数を使います。
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> test <span style="color:#66d9ef">WHERE</span> prefecture <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;東京都&#39;</span> <span style="color:#66d9ef">and</span> age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">30</span> <span style="color:#66d9ef">and</span> begins_with(<span style="color:#e6db74">&#34;date&#34;</span>,<span style="color:#e6db74">&#39;2023-01&#39;</span>)</span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+絞り込みできました。
+<figure><img src="/img/dynamo/begins_with.png"/>
+</figure>
+</p>
+<p>他にも、SIZE,EXISTS,ATTIBUTE_TYPE,CONTAINS,MISSINGなどの関数があります。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/ql-functions.html">Amazon DynamoDB での PartiQL 関数の使用</a></p>
+<h3 id="sqlの書き方">SQLの書き方</h3>
+<p>・カラム名は引用符不要。ただし、DynamoDBの予約語(dateなど)の場合はダブルクォーテーションで囲む。<br>
+・検索値はシングルクォーテーションで囲む。</p>
+<h3 id="注意点">注意点</h3>
+<p>Where句でパーティションキーを使用して絞り込みをしないと、  DynamoDBに対してフルスキャンをかけてしまい、料金がかさむ場合があるようです。</p>
+</div>
+
+  <div class="shareBtnArea">
+    <p class="mPlus1p share">シェアする</p>
+    <a class="rectangleBorder twitterBtn" href="//twitter.com/share?url=https%3a%2f%2famybunny.work%2fpost%2fdynamodb%2f&amp;text=PartiQL%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%97%e3%81%a6DynamoDB%e3%81%ae%e3%83%87%e3%83%bc%e3%82%bf%e3%82%92CSV%e3%81%ab%e5%87%ba%e5%8a%9b%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95" target="_blank" title="Share on Twitter">
+      
+      <img class="fa-twitter" src="/img/logo-white.png" alt="">
+    </a>
+  </div>
+
+  <div class="pagination singlePagination">
+    
+    <a class="rectangleBorder prev singlePrev" href="https://amybunny.work/post/lpic/">前へ</a>
+    
+    
+    
+  </div>
+
+  <div class="mPlus1p breadCrumb">
+    <a href ="/"><i class="fas fa-home"></i> ホーム</a> >
+    <a href="/categories/aws"><i class="fas fa-folder"></i> aws</a>
+  </div>
+</div>
+  
+<!-- _default/single.html end -->
+</div>
+        <div class="sidebar"><div class=" profContainer">
+  <p class="mPlus1p profTitle">プロフィール</p>
+  <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
+  <p class="mPlus1p profAuthor">あみぃ</p>  
+  <p class="profText">32歳インフラエンジニアです。学習中に得た知見をブログにまとめています。</p> 
+  <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
+    
+    <img class="fa-twitter" src="/img/logo-white.png" alt="">
+  </a>
+  <p class="follow">↑follow me！</p>
+</div>
+
+<ul>
+  <li class="mPlus1p sidebarTitle">最近の投稿</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/dynamodb/">PartiQLを使用してDynamoDBのデータをCSVに出力する方法</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/lpic/">LPIC101あずき本の1章1節を解説してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/crypto/">公開鍵暗号方式を図解してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/ajax/">PHPやJavaでAjaxを実装する方法</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/servlet/">JSP&amp;サーブレットで作ったアプリをherokuにデプロイする方法</a>
+      </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">
+          技術解説(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/aws">
+          aws(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/java">
+          java(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/javascript">
+          javascript(1)
+        </a>
+      </li>
+    
+</ul></div>
+      </div><footer class="bar footer">
+  <p class="mPlus1p footerText">
+    ©️2023 ねむみの極み
+  </p>
+</footer></div>
+  </body>
+</html>
