@@ -65,7 +65,14 @@
   <img class="thumbnail" src="/img/ajax.png" alt="">
   <aside class="xToc">
     <div class="xToc_title">目次</div>
-    <nav id="TableOfContents"></nav>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#普通のpost送信だと">普通のPOST送信だと</a></li>
+    <li><a href="#ajaxだと">Ajaxだと</a></li>
+    <li><a href="#javaだと">Javaだと</a></li>
+    <li><a href="#まとめ">まとめ</a></li>
+  </ul>
+</nav>
   </aside>
  
 
@@ -78,7 +85,7 @@
 <br>
 この記事では記述の簡単なjQueryを用いて必要最低限のコードを示すことで、Ajaxを実装できるようにします。  
 サンプルコードではPHPを使い、ユーザーが入力した言葉を画面に表示する処理を例に説明していきます。
-<h1 id="普通のpost送信だと">普通のPOST送信だと</h1>
+<h2 id="普通のpost送信だと">普通のPOST送信だと</h2>
 <p>Ajaxにするとデータのやりとりがどう変わるのかを比較するために、まずは普通のPOST送信の記述例を示します。手っ取り早くAjaxのコードを見たい方は飛ばしてください。
 <br>
 <br>
@@ -160,7 +167,7 @@ logic.php
 <figure><img src="/img/display.png"/>
 </figure>
 </p>
-<h1 id="ajaxだと">Ajaxだと</h1>
+<h2 id="ajaxだと">Ajaxだと</h2>
 <p>今度はAjaxを使うとどのような流れになるかを見ていきます。<br>
 <br>
 index.php
@@ -219,10 +226,10 @@ index.php
 </span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;display&#34;</span>&gt;&lt;/<span style="color:#f92672">p</span>&gt;
 </span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$</span>(<span style="color:#66d9ef">function</span>(){
-</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;#send&#39;</span>).<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;click&#39;</span>,<span style="color:#66d9ef">function</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;##send&#39;</span>).<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;click&#39;</span>,<span style="color:#66d9ef">function</span>(){
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">//送信するデータを変数に入れる
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">words</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;#words&#39;</span>).<span style="color:#a6e22e">val</span>();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">words</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;##words&#39;</span>).<span style="color:#a6e22e">val</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.通信に必要な情報
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">$</span>.<span style="color:#a6e22e">ajax</span>({
@@ -233,7 +240,7 @@ index.php
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.通信が成功した時の処理
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }).<span style="color:#a6e22e">done</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">result</span>){
-</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;#display&#39;</span>).<span style="color:#a6e22e">html</span>(<span style="color:#a6e22e">result</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">$</span>(<span style="color:#e6db74">&#39;##display&#39;</span>).<span style="color:#a6e22e">html</span>(<span style="color:#a6e22e">result</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.通信が失敗した時の処理
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }).<span style="color:#a6e22e">fail</span>(<span style="color:#66d9ef">function</span>(){
@@ -288,7 +295,7 @@ ligic.php
 ex）<br>
 ・いいねボタンを押したらDBのいいねを増やし、画面の数字も増やす。<br>
 ・会員登録時に入力されたIDをDBから瞬時に検索し、使用可否を画面に表示する。</p>
-<h1 id="javaだと">Javaだと</h1>
+<h2 id="javaだと">Javaだと</h2>
 <p>JSP/サーブレットで作ったアプリにAjaxを使いたかったので、PHPで動いたコードを元にJavaでの書き方を模索しました。<br>
 <br>
 いいねボタンを押したら送信先でいいねを増やす処理をして、返ってきた数字を画面に表示させるコードです。
@@ -336,7 +343,7 @@ main.jsp
 Ajaxを使わない場合はフォワードで元のページに戻ってきましたが、PHPの<code>echo()</code>のように、<code>out.print()</code>にいいね数を入れることでデータが返ってきます。<br>
 <br>
 こうしてできたのが<a href="https://mugenlikes.herokuapp.com/">無限いいね</a>です。</p>
-<h1 id="まとめ">まとめ</h1>
+<h2 id="まとめ">まとめ</h2>
 <p>最初はなんとなくとっつきにくいAjaxですが、<br>
 <br>
 ・データのやりとりをJavaScriptがやってくれること<br>
