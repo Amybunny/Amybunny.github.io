@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html><head prefix=”og: http://ogp.me/ns#”>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用)" />
+<meta property="og:description" content="DynamoDBのデータをLambdaでクエリする方法を解説します">
+<meta property="og:image" content="https://amybunny.work/img/node.png" />
+<meta property="og:url" content="https://amybunny.work/post/nodejs_query_dynamodb/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ねむみの極み" />
+
+  <meta name="twitter:title" content="DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用)" />
+  <meta name="twitter:description" content="DynamoDBのデータをLambdaでクエリする方法を解説します">
+  <meta name="twitter:image" content="https://amybunny.work/img/node.png" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="/css/destyle.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<link rel="stylesheet" href="/css/sidebarprof.css" />
+<link rel="stylesheet" href="/css/sidebarlist.css" />
+<link rel="stylesheet" href="/css/single.css" />
+<link rel="stylesheet" href="/css/404.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link href="https://amybunny.work/favicon.ico" rel='icon' type='image/x-icon'/>
+  
+  <title>DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用) | ねむみの極み</title>
+  
+  <meta name="google-site-verification" content="XQSgkkC-zFn5t3goFMQ170K7rC8V0_WB8gJ_rNJyWXk" />
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1YGFJSJ22"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K1YGFJSJ22');
+  </script>
+</head><body>
+    <div class="wrapper"><header class="bar">
+  <h1 class="mPlus1p siteTitle">
+    <a href="/">ねむみの極み</a>
+  </h1>
+</header><div class="mainContainer">
+        <div class="main">
+<!-- _default/single.html start -->
+<style>
+
+</style>
+<div class="singleContainer">
+  <h2 class="mPlus1p titles">DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用)</h2>
+
+  <div class="entryInfoArea">
+    
+    
+    <div class="Date">
+      <p class="mPlus1p singleDate"><i class="fas fa-pen"></i> 2023-12-03</p>
+      
+    </div>
+    <a class="singleCategories" href="/categories/aws">
+      AWS
+    </a>
+  </div>
+
+  <img class="thumbnail" src="/img/node.png" alt="">
+  <aside class="xToc">
+    <div class="xToc_title">目次</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#方法">方法</a></li>
+        <li><a href="#コードの解説">コードの解説</a></li>
+        <li><a href="#おわりに">おわりに</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </aside>
+ 
+
+  <div class="singleContent"><p>こんにちは。<br>
+この記事は<a href="https://adventar.org/calendars/8839">TechCommit Advent Calendar 2023</a> 3日目の記事です。<br>
+<br></p>
+<p><a href="https://amybunny.work/post/dynamodb/">別記事</a>ではPartiQLを使用してDynamoDBのデータをクエリする方法を紹介しましたが、本記事ではLambda(Node.js)でクエリする方法を解説します。<br>
+<br></p>
+<p>※本記事では、DynamoDBとは何ぞや？については触れません。<br>
+初心者の方は、<a href="https://www.sbbit.jp/article/cont1/95515">Amazon DynamoDBとは何かをわかりやすく図解、どう使う？テーブル設計の方法とは</a>などを読んでみるとよいと思います。</p>
+<h3 id="方法">方法</h3>
+<p>前回と同じデータを例に説明します。
+<figure><img src="/img/dynamo/dynamo.png"/>
+</figure>
+</p>
+<p>コードは以下の通りです。
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">//必要なライブラリをインポート
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">DynamoDBClient</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@aws-sdk/client-dynamodb&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">QueryCommand</span>, <span style="color:#a6e22e">DynamoDBDocumentClient</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@aws-sdk/lib-dynamodb&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Dynamoオブジェクトを生成
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">DynamoDBClient</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">docClient</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">DynamoDBDocumentClient</span>.<span style="color:#a6e22e">from</span>(<span style="color:#a6e22e">client</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">handler</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//クエリを作成
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">queryCommand</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">QueryCommand</span>({
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//テーブル名を指定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">TableName</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;test&#34;</span>,
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//検索値
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">ExpressionAttributeValues</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;:prefecture&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;東京都&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;:age&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">30</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;:date&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2023-01&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//検索条件(パーティションキーとソートキー)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">KeyConditionExpression</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;prefecture = :prefecture AND age &gt; :age&#34;</span>,
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//検索条件(上記以外のカラム)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">FilterExpression</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;begins_with(#date,:date)&#34;</span>,
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//検索条件にDynamoDBの予約語が入っている場合の処理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">ExpressionAttributeNames</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;#date&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;date&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//クエリを実行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">send</span>(<span style="color:#a6e22e">command</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">e</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;エラー：&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">e</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>};</span></span></code></pre></td></tr></table>
+</div>
+</div></p>
+<p>上記のコードを実行すると、以下のjsonが返ってきます。
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">prefecture</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;東京都&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">username</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;鈴木&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2023-01-01 11:23:33&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">31</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">prefecture</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;東京都&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">username</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;芦田&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2023-01-24 14:56:34&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">prefecture</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;東京都&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">username</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;谷本&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2023-01-11 11:23:33&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">41</span>
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></td></tr></table>
+</div>
+</div></p>
+<h3 id="コードの解説">コードの解説</h3>
+<p><strong>KeyConditionExpression</strong>と<strong>FilterExpression</strong>が、SQLでいうwhere句にあたります。<br>
+Keyの方ではパーティションキー(必須)とソートキー(任意)を指定します。<br>
+Filterの方は、パーティションキーとソートキー以外のカラムを検索に使いたい時に使用します。<br>
+<br>
+検索条件は、<code>prefecture = &quot;東京都&quot;</code>のように直接指定せず、プレースホルダを使用します。<br>
+<code>prefecture = :prefecture</code>としておき、<strong>ExpressionAttributeValues</strong>で<code>&quot;:prefecture&quot;:&quot;東京都&quot;</code>とします。<br>
+<br>
+検索に使いたいカラム名がDynamoDBの予約語だった場合、検索条件の中で直接指定することができません。今回の場合、「date」の部分が該当します。<br>
+<br>
+通常であれば<code>begins_with(date,:date)</code>で良いのですが、これではエラーになります。<br>
+そのため、検索条件内では#を付けて<code>begins_with(#date,:date)</code>とし、<br>
+<strong>ExpressionAttributeNames</strong>の中で<code>&quot;#date&quot;:&quot;date&quot;</code>のようにカラムを指定します。</p>
+<h3 id="おわりに">おわりに</h3>
+<p>なんたらExpression、なんたらAttributeがたくさん出てきて最初は大変ですが、最小構成から少しずつ試すと分かってくると思います。<br>
+<br>
+誰かの参考になれば幸いです。<br>
+<br></p>
+<h3 id="参考">参考</h3>
+<p><a href="https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v3/developer-guide/javascript_dynamodb_code_examples.html">JavaScript (v3) 用の SDK を使用した DynamoDB の例</a><br>
+<a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/dynamodb/command/QueryCommand/">QueryCommand</a><br>
+<a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.FilterExpression.html">Filter expressions for the Query operation</a></p>
+</div>
+
+  <div class="shareBtnArea">
+    <p class="mPlus1p share">シェアする</p>
+    <a class="rectangleBorder twitterBtn" href="//twitter.com/share?url=https%3a%2f%2famybunny.work%2fpost%2fnodejs_query_dynamodb%2f&amp;text=DynamoDB%e3%81%ae%e3%83%87%e3%83%bc%e3%82%bf%e3%82%92Lambda%e3%81%a7%e3%82%af%e3%82%a8%e3%83%aa%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95%28AWS%20SDK%20for%20JS3%e3%81%8c%e3%83%90%e3%83%b3%e3%83%89%e3%83%ab%e3%81%95%e3%82%8c%e3%81%a6%e3%81%84%e3%82%8bNode.js%e3%82%92%e4%bd%bf%e7%94%a8%29" target="_blank" title="Share on Twitter">
+      
+      <img class="fa-twitter" src="/img/logo-white.png" alt="">
+    </a>
+  </div>
+
+  <div class="pagination singlePagination">
+    
+    <a class="rectangleBorder prev singlePrev" href="https://amybunny.work/post/dynamodb/">前へ</a>
+    
+    
+    
+  </div>
+
+  <div class="mPlus1p breadCrumb">
+    <a href ="/"><i class="fas fa-home"></i> ホーム</a> >
+    <a href="/categories/aws"><i class="fas fa-folder"></i> AWS</a>
+  </div>
+</div>
+  
+<!-- _default/single.html end -->
+</div>
+        <div class="sidebar"><div class=" profContainer">
+  <p class="mPlus1p profTitle">プロフィール</p>
+  <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
+  <p class="mPlus1p profAuthor">あみぃ</p>  
+  <p class="profText">インフラエンジニアです。学習中に得た知見をブログにまとめています。</p> 
+  <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
+    
+    <img class="fa-twitter" src="/img/logo-white.png" alt="">
+  </a>
+  <p class="follow">↑follow me！</p>
+</div>
+
+<ul>
+  <li class="mPlus1p sidebarTitle">最近の投稿</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/nodejs_query_dynamodb/">DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用)</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/dynamodb/">PartiQLを使用してDynamoDBのデータをCSVに出力する方法</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/lpic/">LPIC101あずき本の1章1節を解説してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/crypto/">公開鍵暗号方式を図解してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/ajax/">PHPやJavaでAjaxを実装する方法</a>
+      </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/aws">
+          aws(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">
+          技術解説(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/java">
+          java(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/javascript">
+          javascript(1)
+        </a>
+      </li>
+    
+</ul></div>
+      </div><footer class="bar footer">
+  <p class="mPlus1p footerText">
+    ©️2023 ねむみの極み
+  </p>
+</footer></div>
+  </body>
+</html>
