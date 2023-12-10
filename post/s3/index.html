@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html><head prefix=”og: http://ogp.me/ns#”>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="CloudFormationに入門してみた" />
+<meta property="og:description" content="簡単なS3バケットの作成を通して、CloudFormationに入門してみました">
+<meta property="og:image" content="https://amybunny.work/img/cfn-s3.png" />
+<meta property="og:url" content="https://amybunny.work/post/s3/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ねむみの極み" />
+
+  <meta name="twitter:title" content="CloudFormationに入門してみた" />
+  <meta name="twitter:description" content="簡単なS3バケットの作成を通して、CloudFormationに入門してみました">
+  <meta name="twitter:image" content="https://amybunny.work/img/cfn-s3.png" />
+  <meta name="twitter:card" content="summary_large_image" /><link rel="stylesheet" href="/css/destyle.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<link rel="stylesheet" href="/css/sidebarprof.css" />
+<link rel="stylesheet" href="/css/sidebarlist.css" />
+<link rel="stylesheet" href="/css/single.css" />
+<link rel="stylesheet" href="/css/404.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400&display=swap" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link href="https://amybunny.work/favicon.ico" rel='icon' type='image/x-icon'/>
+  
+  <title>CloudFormationに入門してみた | ねむみの極み</title>
+  
+  <meta name="google-site-verification" content="XQSgkkC-zFn5t3goFMQ170K7rC8V0_WB8gJ_rNJyWXk" />
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1YGFJSJ22"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K1YGFJSJ22');
+  </script>
+</head><body>
+    <div class="wrapper"><header class="bar">
+  <h1 class="mPlus1p siteTitle">
+    <a href="/">ねむみの極み</a>
+  </h1>
+</header><div class="mainContainer">
+        <div class="main">
+<!-- _default/single.html start -->
+<style>
+
+</style>
+<div class="singleContainer">
+  <h2 class="mPlus1p titles">CloudFormationに入門してみた</h2>
+
+  <div class="entryInfoArea">
+    
+    
+    <div class="Date">
+      <p class="mPlus1p singleDate"><i class="fas fa-pen"></i> 2023-12-09</p>
+      
+    </div>
+    <a class="singleCategories" href="/categories/aws">
+      AWS
+    </a>
+  </div>
+
+  <img class="thumbnail" src="/img/cfn-s3.png" alt="">
+  <aside class="xToc">
+    <div class="xToc_title">目次</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#はじめに">はじめに</a></li>
+        <li><a href="#no1一番シンプル">No.1　一番シンプル</a></li>
+        <li><a href="#no2バケット名をawsコンソールから指定できるようにする">No.2　バケット名をAWSコンソールから指定できるようにする</a></li>
+        <li><a href="#no3別の組み込み関数を使ってみる">No.3　別の組み込み関数を使ってみる　</a></li>
+        <li><a href="#no4コンソールに情報を出力してみる">No.4　コンソールに情報を出力してみる</a></li>
+        <li><a href="#no5バケットを2つ作ってみる">No.5　バケットを2つ作ってみる</a></li>
+        <li><a href="#no6静的webサイトホスティングができるバケットを作ってみる">No.6　静的Webサイトホスティングができるバケットを作ってみる</a></li>
+        <li><a href="#おわりに">おわりに</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </aside>
+ 
+
+  <div class="singleContent"><p>こんにちは。<br>
+この記事は<a href="https://adventar.org/calendars/8839">TechCommit Advent Calendar 2023</a> 4日目の記事です。<br>
+4日目が空いていたので、3日目に続いて担当してみました。</p>
+<h3 id="はじめに">はじめに</h3>
+<p>私はAWSを勉強しているのですが、CloudFormationはあまり触ったことがなく、<br>
+なんとなく敬遠していました。<br>
+でも避けては通れないので、やっとこさ入門しました。<br>
+<br></p>
+<p>いきなり長いテンプレートで複雑な構成のリソースを作るのは大変なので、<a href="https://note.alhinc.jp/n/n3908fbd64dd0">この記事</a>を参考にS3バケットをいろいろ作ってみることにしました。<br>
+<br>
+記事ではテンプレートにJSONを使っていましたが、YAMLの方がすっきりして見えるのでYAMLで書き直しました。<br>
+脳死コピペ防止にもよいです。<br>
+<br>
+※CloudFormationでは、テンプレートをもとにリソースを作成することを「スタックの作成」というらしいです。<br>
+<br>
+では始めましょう。</p>
+<h3 id="no1一番シンプル">No.1　一番シンプル</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>: <span style="color:#ae81ff">cfn-1</span> <span style="color:#75715e">#ここだけ好きな名前にする</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+たったこれだけで、S3バケットが一つ作れました。<br>
+意外と簡単ジャマイカ。</p>
+<br>
+<h3 id="no2バケット名をawsコンソールから指定できるようにする">No.2　バケット名をAWSコンソールから指定できるようにする</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Parameters</span>: <span style="color:#75715e">#これ</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName}</span> <span style="color:#75715e">#これ</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br></p>
+<p><code>Parameters</code>を使うと、スタックの作成時にコンソールから値を入力し、<br>
+テンプレート内で使用することができます。<br>
+渡した値は、<code>Fn::Sub:</code>という組み込み関数を使うことで、取り出せます。<br>
+<br>
+↓No.1ではバケット名をテンプレート内で指定しましたが、No.2ではこの画面から好きな名前を決めることができるようになりました。
+<figure><img src="/img/cfn-s3-parameter.png"/>
+</figure>
+
+<br></p>
+<h3 id="no3別の組み込み関数を使ってみる">No.3　別の組み込み関数を使ってみる　</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Parameters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Ref</span>: <span style="color:#ae81ff">S3BucketName</span> <span style="color:#75715e">#これ</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+<code>Ref</code>という組み込み関数を使ってみました。よく使うみたいです。<br>
+<code>Fn::Sub</code>との違いは↓です。<br>
+<br></p>
+<blockquote>
+<p>組み込み関数 Fn::Sub は、入力文字列の変数を、指定した値に置き換えます。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html">(公式ドキュメント)</a></p>
+</blockquote>
+<br>
+<blockquote>
+<p>組み込み関数 Ref は、指定したパラメータまたはリソースの値を返します。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html">(公式ドキュメント)</a></p>
+</blockquote>
+<br>
+<h3 id="no4コンソールに情報を出力してみる">No.4　コンソールに情報を出力してみる</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Parameters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Outputs</span>: <span style="color:#75715e">#これ</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BucketName1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Value</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName}</span> <span style="color:#75715e">#いろんな</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BucketName2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Value</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Ref</span>: <span style="color:#ae81ff">S3BucketName</span> <span style="color:#75715e">#書き方が</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BucketName3</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Value</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Ref</span>: <span style="color:#ae81ff">S3Bucket</span> <span style="color:#75715e">#あるね</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+<code>Outputs</code>を使うと、テンプレート内で指定した内容をコンソール画面に出力することができます。<br>
+いろいろな書き方をしてみましたが、以下のようにちゃんと出力されました。</p>
+<figure><img src="/img/cfn-s3-output.png"/>
+</figure>
+
+<h3 id="no5バケットを2つ作ってみる">No.5　バケットを2つ作ってみる</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Parameters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName1</span>: <span style="color:#75715e">#☆</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName2</span>: <span style="color:#75715e">#★</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket1</span>: <span style="color:#75715e">#☆</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName1}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket2</span>: <span style="color:#75715e">#★</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName2}</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+星が付いているところは好きな名前で良いことが分かりました。</p>
+<br>
+<h3 id="no6静的webサイトホスティングができるバケットを作ってみる">No.6　静的Webサイトホスティングができるバケットを作ってみる</h3>
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">AWSTemplateFormatVersion</span>: <span style="color:#e6db74">2010-09-09</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Parameters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3BucketName</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">S3Bucket</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::Bucket</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">AccessControl</span>: <span style="color:#ae81ff">PublicRead</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">BucketName</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">${S3BucketName}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">WebsiteConfiguration</span>: <span style="color:#75715e">#トップページとエラーページを設定</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">IndexDocument</span>: <span style="color:#ae81ff">index.html</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ErrorDocument</span>: <span style="color:#ae81ff">error.html</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BucketPolicy</span>: <span style="color:#75715e">#バケットポリシーが新登場</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">AWS::S3::BucketPolicy</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Properties</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">PolicyDocument</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ID</span>: <span style="color:#ae81ff">WebhostingPolicy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Version</span>: <span style="color:#e6db74">2012-10-17</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Statement</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Sid</span>: <span style="color:#ae81ff">PublicReadBucketObjects</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Action</span>: <span style="color:#ae81ff">s3:GetObject</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Resource</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Fn::Sub</span>: <span style="color:#ae81ff">arn:aws:s3:::${S3BucketName}/*</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Principal</span>: <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Bucket</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Ref</span>: <span style="color:#ae81ff">S3Bucket</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Outputs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">WebsiteURL</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Value</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Fn::GetAtt</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">S3Bucket.WebsiteURL</span> <span style="color:#75715e">#URLを出力させる</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Description</span>: <span style="color:#ae81ff">URL for website hosted on S3</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+<br>
+これ、スタック作成時にテンプレートエラーは起きなかったので書き方は問題ないと思うのですが、私の環境では権限エラーか何かでうまくいきませんでした。<br>
+掘るとハマりそうなので一旦諦めました。<br>
+うまくいったら教えてください・・・<br>
+<br>
+ちなみに<code>Fn::GetAtt</code>とは</p>
+<blockquote>
+<p>Fn::GetAtt 組み込み関数は、テンプレートのリソースから属性の値を返します。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html">(公式ドキュメント)</a></p>
+</blockquote>
+<p>だそうです</p>
+<h3 id="おわりに">おわりに</h3>
+<p>というわけで、S3バケットの作成を通してCloudFormationを触ってみました。</p>
+</div>
+
+  <div class="shareBtnArea">
+    <p class="mPlus1p share">シェアする</p>
+    <a class="rectangleBorder twitterBtn" href="//twitter.com/share?url=https%3a%2f%2famybunny.work%2fpost%2fs3%2f&amp;text=CloudFormation%e3%81%ab%e5%85%a5%e9%96%80%e3%81%97%e3%81%a6%e3%81%bf%e3%81%9f" target="_blank" title="Share on Twitter">
+      
+      <img class="fa-twitter" src="/img/logo-white.png" alt="">
+    </a>
+  </div>
+
+  <div class="pagination singlePagination">
+    
+    <a class="rectangleBorder prev singlePrev" href="https://amybunny.work/post/nodejs_query_dynamodb/">前へ</a>
+    
+    
+    
+  </div>
+
+  <div class="mPlus1p breadCrumb">
+    <a href ="/"><i class="fas fa-home"></i> ホーム</a> >
+    <a href="/categories/aws"><i class="fas fa-folder"></i> AWS</a>
+  </div>
+</div>
+  
+<!-- _default/single.html end -->
+</div>
+        <div class="sidebar"><div class=" profContainer">
+  <p class="mPlus1p profTitle">プロフィール</p>
+  <img class="profImg" src="https://amybunny.work/img/mooface.jpg" alt="">
+  <p class="mPlus1p profAuthor">あみぃ</p>  
+  <p class="profText">インフラエンジニアです。学習中に得た知見をブログにまとめています。</p> 
+  <a class="rectangleBorder twitterBtn" href="https://twitter.com/Amybunnycarry">
+    
+    <img class="fa-twitter" src="/img/logo-white.png" alt="">
+  </a>
+  <p class="follow">↑follow me！</p>
+</div>
+
+<ul>
+  <li class="mPlus1p sidebarTitle">最近の投稿</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/s3/">CloudFormationに入門してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/nodejs_query_dynamodb/">DynamoDBのデータをLambdaでクエリする方法(AWS SDK for JS3がバンドルされているNode.jsを使用)</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/dynamodb/">PartiQLを使用してDynamoDBのデータをCSVに出力する方法</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/lpic/">LPIC101あずき本の1章1節を解説してみた</a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/post/crypto/">公開鍵暗号方式を図解してみた</a>
+      </li>
+    
+  <li class="mPlus1p sidebarTitle">カテゴリ</li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/aws">
+          aws(3)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">
+          技術解説(2)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/java">
+          java(1)
+        </a>
+      </li>
+    
+      <li class ="listTitle">
+        <a class="listTitleLink" href="/categories/javascript">
+          javascript(1)
+        </a>
+      </li>
+    
+</ul></div>
+      </div><footer class="bar footer">
+  <p class="mPlus1p footerText">
+    ©️2023 ねむみの極み
+  </p>
+</footer></div>
+  </body>
+</html>
